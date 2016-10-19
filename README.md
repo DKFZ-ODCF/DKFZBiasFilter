@@ -18,8 +18,7 @@ $ cd DKFZBiasFilter/
 $ docker build -t "DKFZBiasFilter" .
 ```
 
-Running the Docker
-----------------------------
+## Running the Docker
 
 To run the docker you need a somatic vcf file, a tumor bam and the corresponding bam index file (bai) as well as the reference genome your sample was aligned with.
 
@@ -35,3 +34,5 @@ $ docker run \
 ```
 
 You should find the results in the `/path/to/results_directory/` directory.
+
+Please be aware that the somatic VCF file should only contain filtered "PASS" SNVs.
