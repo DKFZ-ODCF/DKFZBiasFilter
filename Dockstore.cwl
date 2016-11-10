@@ -23,8 +23,7 @@ dct:creator:
 
 requirements:
   - class: DockerRequirement
-    # dockerPull: "quay.io/jwerner_dkfz/dkfzbiasfilter:1.0"
-    dockerPull: "wernerjo/bias"
+    dockerPull: "quay.io/jwerner_dkfz/dkfzbiasfilter:1.0"
   - class: InlineJavascriptRequirement
   - class: InitialWorkDirRequirement
     listing:
