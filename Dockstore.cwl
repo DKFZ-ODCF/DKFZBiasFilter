@@ -107,5 +107,10 @@ outputs:
     outputBinding:
       glob: filtered.vcf
     doc: "The filtered vcf file"
+  output_qc_folder:
+    type: Directory
+    outputBinding:
+      glob: filtered_qcSummary
+    doc: "The qc folder"
 
 baseCommand: ["python", "/usr/local/bin/biasFilter.py"]
