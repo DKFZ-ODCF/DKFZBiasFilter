@@ -23,7 +23,7 @@ dct:creator:
 
 requirements:
   - class: DockerRequirement
-    dockerPull: "quay.io/jwerner_dkfz/dkfzbiasfilter:1.0"
+    dockerPull: "quay.io/jwerner_dkfz/dkfzbiasfilter:1.1"
   - class: InlineJavascriptRequirement
   - class: InitialWorkDirRequirement
     listing:
@@ -107,5 +107,10 @@ outputs:
     outputBinding:
       glob: filtered.vcf
     doc: "The filtered vcf file"
+  output_qc_folder:
+    type: Directory
+    outputBinding:
+      glob: filtered_qcSummary
+    doc: "The qc folder"
 
 baseCommand: ["python", "/usr/local/bin/biasFilter.py"]
