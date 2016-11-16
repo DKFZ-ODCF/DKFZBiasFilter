@@ -30,5 +30,4 @@ RUN \
 
 ADD scripts/ /usr/local/bin
 
-CMD python /usr/local/bin/biasFilter.py -q --mapq=1 --baseq=1 --tempFolder=/home/pcawg/results/ /home/pcawg/input.vcf /home/pcawg/tumor.bam /home/pcawg/hs37d5.fa /home/pcawg/results/filtered.vcf
-
+CMD /usr/local/bin/run_biasfilter.sh -q /home/pcawg/input.vcf /home/pcawg/tumor.bam /home/pcawg/hs37d5.fa
