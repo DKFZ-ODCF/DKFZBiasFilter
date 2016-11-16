@@ -1,0 +1,27 @@
+{
+  "reference_sequence": {
+    "path": "https://dcc.icgc.org/api/v1/download?fn=/PCAWG/reference_data/pan-cancer-data/pan-cancer-reference/genome.fa.gz",
+    "class": "File"
+  },
+  "write_qc": true,
+  "reference_sequence_index": {
+    "path": "https://dcc.icgc.org/api/v1/download?fn=/PCAWG/reference_data/pan-cancer-data/pan-cancer-reference/genome.fa.gz.fai",
+    "class": "File"
+  },
+  "input_vcf": {
+    "path": "https://raw.githubusercontent.com/CancerCollaboratory/dockstore-tool-snpeff/1.0/ALL.chrX.BI_Beagle.20100804.sites.vcf",
+    "class": "File"
+  },
+  "input_bam": {
+    "path": "https://dcc.icgc.org/api/v1/download?fn=/PCAWG/reference_data/wtsi-pancancer/testdata/HCC1143_ds/HCC1143.bam",
+    "class": "File"
+  },
+  "input_bam_index": {
+    "path": "https://dcc.icgc.org/api/v1/download?fn=/PCAWG/reference_data/wtsi-pancancer/testdata/HCC1143_ds/HCC1143.bam.bai",
+    "class": "File"
+  },
+  "output_vcf_file": {
+    "path": "/example_output_directory/output.vcf",
+    "class": "File"
+  }
+}
