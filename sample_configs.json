@@ -21,7 +21,7 @@
     "class": "File"
   },
   "output_vcf_file": {
-    "path": "/example_output_directory/output.vcf",
+    "path": "example_output_directory/output.vcf",
     "class": "File"
   }
 }
