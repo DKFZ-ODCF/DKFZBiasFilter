@@ -1,4 +1,4 @@
-FROM ubuntu:xenial
+FROM buildpack-deps:xenial-scm
 MAINTAINER Ivo Buchhalter @ DKFZ
 
 # Install dependencies
@@ -7,7 +7,7 @@ RUN \
     apt-get -y install \
       build-essential autoconf \
       zlibc zlib1g-dev libncurses5-dev \
-      wget git unzip \
+      wget unzip \
       python python-matplotlib \
       python-pysam python-numpy python-scipy
 
