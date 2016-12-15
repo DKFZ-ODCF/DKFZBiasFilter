@@ -1,30 +1,17 @@
-FROM ubuntu:xenial
+FROM buildpack-deps:xenial-scm
 MAINTAINER Ivo Buchhalter @ DKFZ
 
+# Install dependencies
 RUN \
-    umask 000 && \
     apt-get -y update && \
-    apt-get -y upgrade && \
-    apt-get -y install apt-utils && \
-    apt-get -y install apt-utils apt-transport-https && \
-    apt-get -y install autoconf make && \
-    apt-get -y install build-essential && \
-    apt-get -y install zlibc zlib1g zlib1g-dev && \
-    apt-get -y install libncurses5-dev && \
-    apt-get -y install sudo && \
-    apt-get -y install wget && \
-    apt-get -y install git && \
-    apt-get -y install unzip && \
-    apt-get -y install vim
+    apt-get -y install \
+      build-essential autoconf \
+      zlibc zlib1g-dev libncurses5-dev \
+      wget unzip \
+      python python-matplotlib \
+      python-pysam python-numpy python-scipy
 
-RUN \
-    apt-get -y install python && \
-    apt-get -y install python-pysam && \
-    apt-get -y install python-numpy && \
-    apt-get -y install python-scipy && \
-    apt-get -y install python-matplotlib
-
-
+# Create needed directories
 RUN \
     mkdir -p /home/pcawg/results
 
