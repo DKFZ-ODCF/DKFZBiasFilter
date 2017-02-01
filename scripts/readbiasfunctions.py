@@ -8,6 +8,9 @@ import numpy as np
 import math
 from scipy.stats import binom
 
+# Also adjust in readbiasplots to synchronize
+POSSIBLE_MUTATIONS = ["CA", "CG", "CT", "TA", "TC", "TG", "GT", "GA"]
+
 #################
 # Help Routines #
 #################
@@ -262,7 +265,7 @@ def writeMatrix(matrix, output_filename, is_bias=False):
         Is matrix[mut][base_before][base_after] an integer (is_bias==True) or a list of integer (is_bias==False)
     """
     output_file = open(output_filename, "w")
-	possible_mutations = ["CA", "CG", "CT", "TA", "TC", "TG"]
+    possible_mutations = POSSIBLE_MUTATIONS
     possible_bases = ["A", "C", "G", "T"]
 
     for mut in possible_mutations:
@@ -318,12 +321,12 @@ def calculateErrorMatrix(vcfFilename, vcf_filename_temp, referenceFilename, bamF
     elif qualityScore == 'phred': qualScoreOffset = 33
 
     # Open files
-	vcfFile = open(vcfFilename, "r")
+    vcfFile = gzip.open(vcfFilename, "r") if vcfFilename.endswith(".gz") else open(vcfFilename, "r")
     reference = pysam.Fastafile(referenceFilename)
     bamFile = pysam.Samfile(bamFilename)
     vcf_file_temp=open(vcf_filename_temp, "w")
 
-	possible_mutations = ["CA", "CG", "CT", "TA", "TC", "TG"]
+    possible_mutations = POSSIBLE_MUTATIONS
     possible_bases_clean = ["A", "C", "G", "T"]
 
     # Initialize Error and Mutation Count Matrix
@@ -525,7 +528,7 @@ def calculateBiasMatrix(p_val_threshold, bias_ratio_min, bias_ratio_max, n_reads
           dictionary
             Dictionary, containing the bias information for all possible mutations in all possible triplet contexts
     """
-	possible_mutations = ["CA", "CG", "CT", "TA", "TC", "TG"]
+    possible_mutations = POSSIBLE_MUTATIONS
     possible_bases = ["A", "C", "G", "T"]
 
     bias_matrix = {}
@@ -615,7 +618,7 @@ def flagBiasedMutations(vcf_filename, vcf_filename_flagged, reference_filename, 
             Mutation counts
     """
     # General data
-	possible_mutations = ["CA", "CG", "CT", "TA", "TC", "TG"]
+    possible_mutations = POSSIBLE_MUTATIONS
     possible_bases = ["A", "C", "G", "T", "N", "a", "c", "g", "t", "n"]
     possible_bases_clean = ["A", "C", "G", "T"]
 

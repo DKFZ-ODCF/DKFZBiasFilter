@@ -9,6 +9,9 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
+# Also adjust in readbiasfunctions to synchronize
+POSSIBLE_MUTATIONS = ["CA", "CG", "CT", "TA", "TC", "TG", "GT", "GA"]
+
 #################
 # Help Routines #
 #################
@@ -27,7 +30,7 @@ def calculateRootedSize(size, max_val):
           float
             np.sqrt(size/max_val)
     """
-	if(float(size) != 0.0):
+    if(float(size) != 0.0 and max_val != 0):
         return np.sqrt(size/max_val)
     else:
         return 0.0
@@ -200,12 +203,13 @@ def plotErrorMatrix(error_matrix, mutation_count_matrix, error_type, pdf, is_bia
           is_bias: bool
             Must be set to true, if error_matrix[mut][base_before][base_after] is int, and false if error_matrix[mut][base_before][base_after] is list of int
     """
-	possible_mutations = ["CA", "CG", "CT", "TA", "TC", "TG"]
+    possible_mutations = POSSIBLE_MUTATIONS
 
     # Set figure properties
     figure = plt.figure(figsize=(28,4), dpi=80)
     figure.subplots_adjust(wspace=0.1, bottom=.2, top=.88)
-	gs = gridspec.GridSpec(1, 8, height_ratios=[1], width_ratios=[1,1,1,1,1,1,1,0.2])
+    gs = gridspec.GridSpec(1, len(possible_mutations) + 2, height_ratios=[1],
+                           width_ratios=[1] * len(possible_mutations) + [1, 0.2])
     colormap="PRGn"
     min_val = -3
     max_val = 3
@@ -220,7 +224,7 @@ def plotErrorMatrix(error_matrix, mutation_count_matrix, error_type, pdf, is_bia
                     max_mutation_count = mutation_count_matrix[mutation][base_before][base_after]
 
     # Plot square size legend
-	ax = plt.subplot(gs[6])
+    ax = plt.subplot(gs[len(possible_mutations)])
     plotSquareSizeLegend(ax, colormap, min_val, max_val, max_mutation_count)
     plt.title("Number of Mutations")
 
@@ -262,7 +266,7 @@ def plotErrorMatrix(error_matrix, mutation_count_matrix, error_type, pdf, is_bia
         plt.xticks([0, 1, 2, 3], ["T", "G", "C", "A"])
         plt.xlabel("following")
 
-	ax = plt.subplot(gs[7:])
+    ax = plt.subplot(gs[len(possible_mutations) + 1:])
     ax.yaxis.tick_right()
     ax.imshow(np.outer(np.arange(0,1,0.01), np.ones(10)), aspect='auto', cmap=colormap, origin="lower")
     plt.xlim([0,1])
