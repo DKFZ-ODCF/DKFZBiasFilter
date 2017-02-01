@@ -2,10 +2,9 @@
     This module provides access to functions used for the calculation
     of sequence read biases in DNA mutations detected from NGS data.
 """
+import gzip
 import sys
 import pysam
-import numpy as np
-import math
 from scipy.stats import binom
 
 # Also adjust in readbiasplots to synchronize
@@ -219,7 +218,9 @@ def calculateACGTNacgtnFields(bamFile, chromosome, position, mapq, baseq, qual_s
                 # TODO: Check if read is dupmarked!
                 if pileupread.alignment.mapq >= mapq:
                     # Define Positions of base and base quality within read
-					pos_base = pileupread.qpos
+                    pos_base = pileupread.qpos if hasattr(pileupread, "qpos") else pileupread.query_position
+                    if pos_base is None:
+                        pos_base = 0
                     pos_qual = pos_base
                     cigar_tuples = pileupread.alignment.cigar
                     if(cigar_tuples[0][0] == 4):
@@ -640,7 +641,7 @@ def flagBiasedMutations(vcf_filename, vcf_filename_flagged, reference_filename, 
                 mutation_count_matrix[mut][base_before][base_after] = 0
 
     # open files
-	vcf_file = open(vcf_filename, "r")
+    vcf_file = gzip.open(vcf_filename, "r") if vcf_filename.endswith(".gz") else open(vcf_filename, "r")
     vcf_file_flagged = open(vcf_filename_flagged, "w")
     reference_fasta = pysam.Fastafile(reference_filename)
 
