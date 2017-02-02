@@ -1,6 +1,10 @@
+#!/usr/bin/env python
 import optparse
 import os
+import sys
 import tempfile
+
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
 from readbiasfunctions import *
 from readbiasplots import *
