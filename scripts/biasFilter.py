@@ -40,6 +40,7 @@ if __name__ == "__main__":
     parser.add_option('--maxOpRatioSeq', action='store', type='float', dest='max_op_ratio_seq', help='Maximal ratio of reads from opposite strand to flag a variant as pcr biased [default: %default]', default=0.1)
     parser.add_option('--filterCycles', action='store', type='int', dest='filter_cycles', help='Number of filtering cycles. If number of cycles is 0, then the vcf file is only annotated with ACGTNacgtn<PLUS | MINUS> entries in the INFO field, and bias plots are created before filtering [default: %default]', default=2)
     parser.add_option('-q', '--writeQC', action='store_true', dest='write_qc', help='Write quality control? If true, then a folder is created within the same folder as the filtered vcf file storing bias plots and qc files')
+    parser.add_option('--passOnly', action='store_true', dest='pass_only', help='Only apply filters to currently passing variants.')
     
     (options,args) = parser.parse_args()    
     
@@ -134,7 +135,7 @@ if __name__ == "__main__":
         matrix_cycle_string = str(i+1)+"rounds_of_filtering.csv"
 
         # Flag biased variants
-        error_matrix_pcr, error_matrix_sequencing, mutation_count_matrix = flagBiasedMutations(vcf_filename_temp, filtered_vcf_filename, reference_sequence_filename, bias_matrix_pcr, bias_matrix_seq, options.max_op_reads_pcr_weak, options.max_op_reads_pcr_strong, options.max_op_reads_seq_weak, options.max_op_reads_seq_strong, options.max_op_ratio_pcr, options.max_op_ratio_seq)
+        error_matrix_pcr, error_matrix_sequencing, mutation_count_matrix = flagBiasedMutations(vcf_filename_temp, filtered_vcf_filename, reference_sequence_filename, bias_matrix_pcr, bias_matrix_seq, options.max_op_reads_pcr_weak, options.max_op_reads_pcr_strong, options.max_op_reads_seq_weak, options.max_op_reads_seq_strong, options.max_op_ratio_pcr, options.max_op_ratio_seq, options.pass_only)
 
         # Move filtered_vcf_filename to vcf_filename_temp
         os.rename(filtered_vcf_filename, vcf_filename_temp)

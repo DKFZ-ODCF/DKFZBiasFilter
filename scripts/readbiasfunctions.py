@@ -580,7 +580,7 @@ def calculateBiasMatrix(p_val_threshold, bias_ratio_min, bias_ratio_max, n_reads
 
     return bias_matrix
                     
-def flagBiasedMutations(vcf_filename, vcf_filename_flagged, reference_filename, bias_matrix_pcr, bias_matrix_seq, max_num_opposite_reads_pcr_weak, max_num_opposite_reads_pcr_strong, max_num_opposite_reads_seq_weak, max_num_opposite_reads_seq_strong, max_opposite_ratio_pcr, max_opposite_ratio_seq):
+def flagBiasedMutations(vcf_filename, vcf_filename_flagged, reference_filename, bias_matrix_pcr, bias_matrix_seq, max_num_opposite_reads_pcr_weak, max_num_opposite_reads_pcr_strong, max_num_opposite_reads_seq_weak, max_num_opposite_reads_seq_strong, max_opposite_ratio_pcr, max_opposite_ratio_seq, pass_only=False):
     """
         Flag vcf file for read biases and return read count matrices for plus and minus stranded PCR template-, and sequencing reads, after filtering mutations showing a read bias. Furthermore, return a mutation count matrix after filtering for read biases.
 
@@ -685,9 +685,12 @@ def flagBiasedMutations(vcf_filename, vcf_filename_flagged, reference_filename, 
             split_line = line.rstrip().split("\t")
 
             # Skip entry if it was already flagged as being biased
+            # or skip non-PASS if we are only assessing passing variants
             flagged=False
             for filter_flag in split_line[header.index("FILTER")].split(";"):
                 if(filter_flag == "bPcr" or filter_flag == "bSeq"):
+                    flagged=True
+                elif pass_only and filter_flag not in set(["PASS", "."]):
                     flagged=True
             if(flagged):
                 vcf_file_flagged.write(line)
