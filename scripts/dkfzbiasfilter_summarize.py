@@ -21,11 +21,13 @@ Usage:
 """
 from __future__ import print_function
 import collections
+import optparse
 import sys
 
 import pysam
+import yaml
 
-def main(filter_vcf):
+def main(filter_vcf, opts):
     changes_pcr = collections.defaultdict(int)
     changes_seq = collections.defaultdict(int)
     depths_pcr = collections.defaultdict(int)
@@ -36,33 +38,48 @@ def main(filter_vcf):
                               if f.description.startswith("Variant allele shows a bias")])
         for rec in bcf_in.fetch():
             if len(set(rec.filter) & damage_filters) == len(rec.filter):
-                change = "%s->%s" % (rec.ref, rec.alts[0])
-                if "bPcr" in set(rec.filter):
-                    changes_pcr[change] += 1
-                    depths_pcr = damage_support(rec, depths_pcr)
-                if "bSeq" in set(rec.filter):
-                    changes_seq[change] += 1
-                    seqerror_support(rec, depths_seq)
+                if len(rec.ref) == 1 and len(rec.alts[0]) == 1:
+                    change = "%s->%s" % (rec.ref, rec.alts[0])
+                    if "bPcr" in set(rec.filter):
+                        changes_pcr[change] += 1
+                        depths_pcr = damage_support(rec, depths_pcr)
+                    if "bSeq" in set(rec.filter):
+                        changes_seq[change] += 1
+                        seqerror_support(rec, depths_seq)
             elif list(rec.filter) == ["PASS"]:
                 depths_pass = pass_support(rec, depths_pass)
-    print("* Damage")
-    for change, val in changes_pcr.items():
-        if val > 25:
-            print(change, val)
+    changes = {}
+    depths = {}
+    for val, change in _organize_changes(changes_pcr, opts):
+        changes["%s damage" % change] = val
+    depths["damage"] = {}
     for depth, count in sorted(depths_pcr.items()):
-        if count > 25:
-            print(depth, count)
-    print("* Bias")
-    for change, val in changes_seq.items():
-        if val > 25:
-            print(change, val)
+        if depth < opts.maxdepth:
+            depths["damage"][depth] = count
+    for val, change in _organize_changes(changes_seq, opts):
+        changes["%s bias" % change] = val
+    depths["bias"] = {}
     for depth, count in sorted(depths_seq.items()):
-        if count > 25:
-            print(depth, count)
-    print("* Pass")
+        if depth < opts.maxdepth:
+            depths["bias"][depth] = count
+    depths["pass"] = {}
     for depth, count in sorted(depths_pass.items()):
-        if count > 25 and depth < 15:
-            print(depth, count)
+        if depth < opts.maxdepth:
+            depths["pass"][depth] = count
+    out = {"changes": changes, "depths": depths}
+    if opts.sample:
+        out["sample"] = opts.sample
+    out_handle = open(opts.outfile, "w") if opts.outfile else sys.stdout
+    yaml.safe_dump(out, out_handle, default_flow_style=False, allow_unicode=False)
+
+def _organize_changes(changes, opts):
+    out = []
+    total = 0
+    for change, val in changes.items():
+        total += val
+        out.append((val, change))
+    out.sort(reverse=True)
+    return out[:opts.maxchanges] + [(total, "total")]
 
 def pass_support(rec, depths):
     summarized = dict(summarize_support(rec))
@@ -114,4 +131,20 @@ def summarize_support(rec):
     return summarized
 
 if __name__ == "__main__":
-    main(*sys.argv[1:])
+    parser = optparse.OptionParser("Summary statistics for filtered VCF output\n"
+                                   "  dkfzbiasfilter_summarize.py <vcf_file>")
+
+    # Optional Arguments
+    parser.add_option('--maxchanges', type='int', default=6,
+                      help='Maximum number of changes to include for each sample')
+    parser.add_option('--maxdepth', type='int', default=5,
+                      help='Maximum read depth for reporting changes.')
+    parser.add_option('--sample', type='string',
+                      help='Sample name')
+    parser.add_option('--outfile', type='string',
+                      help='Output file (defaults to stdout)')
+    options, args = parser.parse_args()
+    if len(args) != 1:
+        parser.print_help()
+    else:
+        main(args[0], options)
