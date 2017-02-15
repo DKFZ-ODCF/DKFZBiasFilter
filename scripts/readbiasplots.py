@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
 # Also adjust in readbiasfunctions to synchronize
-POSSIBLE_MUTATIONS = ["CA", "CG", "CT", "TA", "TC", "TG", "GT", "GA"]
+POSSIBLE_MUTATIONS = ["CA", "CG", "CT", "TA", "TC", "TG"]
 
 #################
 # Help Routines #

@@ -8,7 +8,7 @@ import pysam
 from scipy.stats import binom
 
 # Also adjust in readbiasplots to synchronize
-POSSIBLE_MUTATIONS = ["CA", "CG", "CT", "TA", "TC", "TG", "GT", "GA"]
+POSSIBLE_MUTATIONS = ["CA", "CG", "CT", "TA", "TC", "TG"]
 
 #################
 # Help Routines #
