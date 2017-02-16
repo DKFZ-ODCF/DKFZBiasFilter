@@ -11,10 +11,6 @@ RUN \
       python python-matplotlib \
       python-pysam python-numpy python-scipy
 
-# Create needed directories
-RUN \
-    mkdir -p /home/pcawg/results
-
 ADD scripts/ /usr/local/bin
 
 CMD /usr/local/bin/run_biasfilter.sh -q /home/pcawg/input.vcf /home/pcawg/tumor.bam /home/pcawg/hs37d5.fa
