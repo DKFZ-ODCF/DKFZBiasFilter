@@ -4,6 +4,30 @@ class: CommandLineTool
 id: "DKFZBiasFilter"
 label: "DKFZ Bias Filter"
 cwlVersion: v1.0
+
+doc: |
+    A Docker container for the DKFZ Bias Filter.
+    
+    Usage:
+    
+    Clone the git repository and build the docker.
+    ```
+    git clone https://github.com/eilslabs/DKFZBiasFilter.git
+    cd DKFZBiasFilter/
+    docker build -t "DKFZBiasFilter" .
+    ```
+    
+    Run the docker:
+    ```
+    docker run \
+        -v /path/to/tumor.bam:/home/pcawg/tumor.bam \
+        -v /path/to/tumor.bam.bai:/home/pcawg/tumor.bam.bai \
+        -v /path/to/reference.fa:/home/pcawg/hs37d5.fa \
+        -v /path/to/somatic.vcf:/home/pcawg/input.vcf \
+        -v /path/to/results_directory/:/home/pcawg/results \
+        DKFZBiasFilter
+    ```
+
 description: |
     A Docker container for the DKFZ Bias Filter.
 
